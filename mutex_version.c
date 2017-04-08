@@ -78,13 +78,12 @@ int main(int argc, char* argv[]) {
         for(i = m_member; i < m_member+m_insert ; i++){
             operations[i] = 1;
         }
-        for(i = m_member+m_insert; i < m ; i++){
+        for(i = m_member+m_insert; i < m_member+m_insert+m_delete ; i++){
             operations[i] = 2;
         }
 
         shuffle(operations, m);
         shuffle(randomarray, m);
-        int count_tot = 0;
         pthread_mutex_init(&mutex, NULL);
         GET_TIME(start);
         for (thread = 0; thread < thread_count; thread++)  
@@ -266,7 +265,6 @@ void freeMemory(struct list_node_s** head_pp) {
 
 void* Thread_opp(void* rank) {
    long my_rank = (long) rank;
-   double factor;
    long long i;
    long long my_n = m/thread_count;
    long long my_first_i = my_n*my_rank;
