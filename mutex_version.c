@@ -5,7 +5,7 @@
 #include "timer.h"
 #include <pthread.h>
 
-#define MAX_RANDOM 65536
+#define MAX_RANDOM 65535
 
 
 //Linked List node          

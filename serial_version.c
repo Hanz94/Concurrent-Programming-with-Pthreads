@@ -4,7 +4,7 @@
 #include <time.h>
 #include "timer.h"
 
-#define MAX_RANDOM 65536
+#define MAX_RANDOM 65535
 
 
 //Linked List node          
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
         for(i = m_member; i < m_member+m_insert ; i++){
             operations[i] = 1;
         }
-        for(i = m_member+m_insert; i < m ; i++){
+        for(i = m_member+m_insert; i < m_member+m_insert+m_delete ; i++){
             operations[i] = 2;
         }
 
