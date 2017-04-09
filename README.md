@@ -10,7 +10,7 @@ All these implementation of the linked list supports Member( ), Insert( ), and D
 - timer.h -: Header file for calculating execution time.
 - run.sh -: Shell script to run all combinations and get results.
 
-###### ------------- Executing all combinations -----------------------
+#### ------------- Executing all combinations -----------------------
 
 1. Run the run.sh file using following command and get the command line output to text file.
 	
@@ -20,7 +20,7 @@ All these implementation of the linked list supports Member( ), Insert( ), and D
 
 	`chmod +x run.sh`
 
-###### ------------- Executing serial version -----------------------
+#### ------------- Executing serial version -----------------------
 
 1. Compile the serial_version.c using following command.
 ```C
@@ -30,7 +30,7 @@ All these implementation of the linked list supports Member( ), Insert( ), and D
 	./serial_version <m_f> <i_f> <d_f> <no_of_samples>  
 	eg -: `./serial_version 0.99 0.005 0.005 200`
 
-###### ------------- Executing mutex version -----------------------
+#### ------------- Executing mutex version -----------------------
 
 1. Compile the mutex_version.c using following command.
 
@@ -42,7 +42,7 @@ All these implementation of the linked list supports Member( ), Insert( ), and D
 	eg -: `./mutex_version 0.99 0.005 0.005 200 4`
 
 
-------------- Executing Read Write Lock version -----------------------
+#### ------------- Executing Read Write Lock version -----------------------
 
 1. Compile the rwlock_version.c using following command.
 ```C
