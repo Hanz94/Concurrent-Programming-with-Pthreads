@@ -51,6 +51,11 @@ int main(int argc, char* argv[]) {
     double start, finish, elapsed,mean;
     double total_time = 0 ;
     double time_list[sample];
+
+    int count_member = 0;
+    int count_insert = 0;
+    int count_delete = 0;
+    int count_tot = 0;
     //int noOfThreads;
 
     m_member = m*f_member;
@@ -72,15 +77,44 @@ int main(int argc, char* argv[]) {
             randomarray[i+n] = rand() % MAX_RANDOM;
         }
 
-        for(i = 0; i < m_member ; i++){
-            operations[i] = 0;
+        count_member = 0;
+        count_insert = 0;
+        count_delete = 0;
+        count_tot = 0;
+        
+        while (count_tot < (m_member+m_insert+m_delete)) {
+
+            int rand_select = rand() % 3;
+            int in_value = randomarray[count_tot];
+
+            if (rand_select == 0 && count_member < m_member) {
+                operations[count_tot] = 0;
+                count_member++;
+            }
+
+            else if (rand_select == 1 && count_insert < m_insert) {
+                operations[count_tot] = 1;
+                count_insert++;
+            }
+
+            else if (rand_select == 2 && count_delete < m_delete) {
+                operations[count_tot] = 2;
+                count_delete++;
+            }
+
+            count_tot = count_insert + count_member + count_delete;
         }
-        for(i = m_member; i < m_member+m_insert ; i++){
-            operations[i] = 1;
-        }
-        for(i = m_member+m_insert; i < m_member+m_insert+m_delete ; i++){
-            operations[i] = 2;
-        }
+
+
+        // for(i = 0; i < m_member ; i++){
+        //     operations[i] = 0;
+        // }
+        // for(i = m_member; i < m_member+m_insert ; i++){
+        //     operations[i] = 1;
+        // }
+        // for(i = m_member+m_insert; i < m_member+m_insert+m_delete ; i++){
+        //     operations[i] = 2;
+        // }
 
         shuffle(operations, m);
         shuffle(randomarray, m);
