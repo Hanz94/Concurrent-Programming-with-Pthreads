@@ -7,8 +7,8 @@ This repository contains linked list implementation as follows;
   
 All these implementation of the linked list supports Member( ), Insert( ), and Delete( ) functions of the linked list.
 
-timer.h -: Header file for calculating execution time.
-run.sh -: Shell script to run all combinations and get results.
+-timer.h -: Header file for calculating execution time.
+-run.sh -: Shell script to run all combinations and get results.
 
 ------------- Executing all combinations -----------------------
 
