@@ -24,10 +24,10 @@ All these implementation of the linked list supports Member( ), Insert( ), and D
 
 1. Compile the serial_version.c using following command.
 ```C
-gcc serial_version.c -g -Wall -o serial_version -lpthread -lm
+	gcc serial_version.c -g -Wall -o serial_version -lpthread -lm
 ```
-2. Run the serial_version using following command with wanted parameters.
-	./serial_version <m_f> <i_f> <d_f> <no_of_samples>
+2. Run the serial_version using following command with wanted parameters.  
+	./serial_version <m_f> <i_f> <d_f> <no_of_samples>  
 	eg -: `./serial_version 0.99 0.005 0.005 200`
 
 ###### ------------- Executing mutex version -----------------------
@@ -37,8 +37,8 @@ gcc serial_version.c -g -Wall -o serial_version -lpthread -lm
 ```C
 	gcc mutex_version.c -g -Wall -o mutex_version -lpthread -lm
 ````
-2. Run the mutex_version using following command with wanted parameters.
-	./mutex_version <m_f> <i_f> <d_f> <no_of_samples> <no_of_threads>
+2. Run the mutex_version using following command with wanted parameters.  
+	./mutex_version <m_f> <i_f> <d_f> <no_of_samples> <no_of_threads>  
 	eg -: `./mutex_version 0.99 0.005 0.005 200 4`
 
 
@@ -48,6 +48,6 @@ gcc serial_version.c -g -Wall -o serial_version -lpthread -lm
 ```C
 	`gcc rwlock_version.c -g -Wall -o rwlock_version -lpthread -lm`
 ```
-2. Run the mutex_version using following command with wanted parameters.
-	./rwlock_version <m_f> <i_f> <d_f> <no_of_samples> <no_of_threads>
+2. Run the mutex_version using following command with wanted parameters.  
+	./rwlock_version <m_f> <i_f> <d_f> <no_of_samples> <no_of_threads>  
 	eg -: `./rwlock_version 0.99 0.005 0.005 200 4`
