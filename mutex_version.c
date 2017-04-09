@@ -8,22 +8,24 @@
 #define MAX_RANDOM 65535
 
 
-//Linked List node          
+/* Declaration of the Linked List node */          
 struct list_node_s {
     int data;
     struct list_node_s* next;
 };
 
+/* Declaration global variables */
 float f_insert, f_delete, f_member;
 int sample;
 pthread_mutex_t mutex;
 long thread_count;
-int n = 1000;
-int m = 10000;
+int n = 1000;		// n - no of elements
+int m = 10000;		// m - no of operations
 int randomarray[10000];
 int operations[10000];
 struct list_node_s* head = NULL;
 
+/* Functions Declaration */
 int Insert(int value, struct list_node_s** head_pp);
 
 int Delete(int value, struct list_node_s** head_pp);
@@ -40,107 +42,82 @@ void freeMemory(struct list_node_s** head_pp);
 
 void* Thread_opp(void* rank);
 
+void initializeRandomArray(struct list_node_s** head_pp,int n,int m,int* randomarray);
+
+void initializeOperations(int* operations,int m_member,int m_insert,int m_delete);
+
+/* main */
 int main(int argc, char* argv[]) {
 
     long thread;  /* Use long in case of a 64-bit system */
     pthread_t* thread_handles;
-    getInputs(argc, argv);
+    
+    getInputs(argc, argv);		// initialize user arguements
     
     thread_handles = (pthread_t*) malloc (thread_count*sizeof(pthread_t)); 
+    
     int m_insert, m_delete, m_member;
     double start, finish, elapsed,mean;
     double total_time = 0 ;
     double time_list[sample];
-    //int noOfThreads;
-
-    int count_member = 0;
-    int count_insert = 0;
-    int count_delete = 0;
-    int count_tot = 0;
-
-    m_member = m*f_member;
-    m_insert = m*f_insert;
-    m_delete = m*f_delete;
+   
+    m_member = m * f_member;	//	calculate individual number of sub operations for member operation
+    m_insert = m * f_insert;	//	calculate individual number of sub operations for insert operation
+    m_delete = m * f_delete;	//	calculate individual number of sub operations for delete operation
     
     int j;
-    for(j= 0 ; j<sample; j++){
-        int i = 0;
-        while (i < n) {
-            int x = rand() % MAX_RANDOM;
-            if (Insert(x, &head) == 1){
-                randomarray[i] = x;
-                i++;
-            }
-        }
+    for(j = 0 ; j < sample; j++){
 
-        for(i = 0; i < m-n; i++){
-            randomarray[i+n] = rand() % MAX_RANDOM;
-        }
+        initializeRandomArray(&head,n,m,randomarray);
 
+		initializeOperations(operations,m_member,m_insert,m_delete);
 
-        count_member = 0;
-        count_insert = 0;
-        count_delete = 0;
-        count_tot = 0;
+        shuffle(operations, m);		// shuffle the operations array
+        shuffle(randomarray, m);	// shuffle the random number array
         
-        while (count_tot < (m_member+m_insert+m_delete)) {
-
-            int rand_select = rand() % 3;
-
-            if (rand_select == 0 && count_member < m_member) {
-                operations[count_tot] = 0;
-                count_member++;
-            }
-
-            else if (rand_select == 1 && count_insert < m_insert) {
-                operations[count_tot] = 1;
-                count_insert++;
-            }
-
-            else if (rand_select == 2 && count_delete < m_delete) {
-                operations[count_tot] = 2;
-                count_delete++;
-            }
-
-            count_tot = count_insert + count_member + count_delete;
-        }
-
-        // for(i = 0; i < m_member ; i++){
-        //     operations[i] = 0;
-        // }
-        // for(i = m_member; i < m_member+m_insert ; i++){
-        //     operations[i] = 1;
-        // }
-        // for(i = m_member+m_insert; i < m_member+m_insert+m_delete ; i++){
-        //     operations[i] = 2;
-        // }
-
-        shuffle(operations, m);
-        shuffle(randomarray, m);
         pthread_mutex_init(&mutex, NULL);
-        GET_TIME(start);
+        
+        GET_TIME(start);	// get start time of the operation
+        
+        /* calling pthread create */
         for (thread = 0; thread < thread_count; thread++)  
-            pthread_create(&thread_handles[thread], NULL,
-                Thread_opp, (void*)thread);  
+            pthread_create(&thread_handles[thread], NULL,Thread_opp, (void*)thread);  
 
+		/* calling pthread join */
         for (thread = 0; thread < thread_count; thread++) 
             pthread_join(thread_handles[thread], NULL); 
-        GET_TIME(finish);
+            
+        GET_TIME(finish);	// get finished time of the operation
+        
+        /* calculate the elapsed time for the operation */
         elapsed = finish - start;
         time_list[j] = elapsed;
         total_time += elapsed;
+        
         //printf("   Elapsed time = %e seconds\n", elapsed);
+        
         pthread_mutex_destroy(&mutex);
+        
         freeMemory(&head);
         
     }
+    
     mean = total_time/sample;
+    
     calculateSTD(time_list, sample, mean);
+    
     free(thread_handles);
+    
     return 0;
-}
+} /* main */
 
 
+
+/*
+ * Function		: Member
+ * Purpose		: check whether given element is existing in the linked list
+ * In args		: int value, struct list_node_s* head_p
+ */
 int Member(int value, struct list_node_s* head_p){
     struct list_node_s* curr_p = head_p;
 
@@ -152,9 +129,15 @@ int Member(int value, struct list_node_s* head_p){
     }else{
         return 1;
     }
-}
+} /* Member */
 
 
+
+/*
+ * Function		: Insert
+ * Purpose		: insert an element to the linked list
+ * In args		: int value, struct list_node_s* head_p
+ */
 int Insert(int value, struct list_node_s** head_pp) {
     struct list_node_s* curr_p = *head_pp;
     struct list_node_s* pred_p = NULL;
@@ -170,18 +153,25 @@ int Insert(int value, struct list_node_s** head_pp) {
         temp_p->data = value;
         temp_p->next = curr_p;
 
-        if (pred_p == NULL)  /* New head node */
+        if (pred_p == NULL)  /* New first node */
             *head_pp = temp_p;
         else
             pred_p->next = temp_p;
 
         return 1;
     }
-    else /* Value Already in list */
-        return 0;
-}
+    else{ /* Value Already in list */
+		return 0;
+	}
+} /* Insert */
 
 
+
+/*
+ * Function		: Delete
+ * Purpose		: delete an element from the linked list
+ * In args		: int value, struct list_node_s* head_p
+ */
 int Delete(int value, struct list_node_s** head_pp) {
     struct list_node_s* curr_p = *head_pp;
     struct list_node_s* pred_p = NULL;
@@ -192,7 +182,7 @@ int Delete(int value, struct list_node_s** head_pp) {
     }
 
     if (curr_p != NULL && curr_p->data == value) {
-        if (pred_p == NULL) {
+        if (pred_p == NULL) { /* Deleting the first Node in the list*/
             *head_pp = curr_p->next;
             free(curr_p);
         }
@@ -202,21 +192,22 @@ int Delete(int value, struct list_node_s** head_pp) {
         }
         return 1;
     }
-    else
+    else{  /* Value is not in the list*/
         return 0;
-}
+	}
+} /* Delete */
 
 
-/*------------------------------------------------------------------
- * Function:    Get_args
- * Purpose:     Get the command line args
- * In args:     argc, argv
- * Globals out: thread_count, n
+
+/*
+ * Function		: getInputs
+ * Purpose		: get the command line args
+ * In args		: int argc, char* argv
  */
 void getInputs(int argc, char* argv[]) {
     if (argc != 6)
     {
-        printf("Please give the command: ./serial_linked_list <f_Member> <f_Insert> <f_Delete> <sample size>\n");
+        printf("Please give the command: ./mutex_version <f_Member> <f_Insert> <f_Delete> <sample size> <thread_count>\n");
         exit(0);
     }
 
@@ -231,9 +222,15 @@ void getInputs(int argc, char* argv[]) {
        exit(0);
    }
 
-} 
+} /* getInputs */
 
 
+
+/*
+ * Function		: shuffle
+ * Purpose		: shuffle the given array to get random pattern
+ * In args		: int* array, size_t n
+ */
 void shuffle(int* array, size_t n)
 {
     if (n > 1) 
@@ -248,33 +245,43 @@ void shuffle(int* array, size_t n)
           array[i] = t;
         }
     }
-}
+} /* shuffle */
 
+
+
+/*
+ * Function		: calculateSTD
+ * Purpose		: calculate the standard deviation of times
+ * In args		: double[] time, int samples, double mean
+ */
 int calculateSTD(double time_list[], int samples, double mean){
-  int i;
-  float std=0;
-  float temp=0.0;
-  float min_samples;
-  for(i=0; i<samples; i++){
-    time_list[i] -= mean;
-    temp = time_list[i]*time_list[i];
-    std += temp;
-  }
-  std = std/samples;
-  std = sqrt(std);
-  min_samples = pow((100*1.96*std)/(5*mean),2);
-  printf("Average time spent = %f\n",mean);
-  printf("Standard Deviation = %f\n",(std));
-  printf("Minimum samples need = %f\n", min_samples);
+	int i;
+	float std=0;
+	float temp=0.0;
+	float min_samples;
+	
+	for(i=0; i<samples; i++){
+		time_list[i] -= mean;
+		temp = time_list[i]*time_list[i];
+		std += temp;
+	}
+	
+	std = std/samples;
+	std = sqrt(std);
+	min_samples = pow((100*1.96*std)/(5*mean),2);
+	printf("Average time spent = %f\n",mean);
+	printf("Standard Deviation = %f\n",(std));
+	printf("Minimum samples need = %f\n", min_samples);
 
-  return 0;
-}
+	return 0;
+} /* calculateSTD */
 
 
-/* Function:   freeMemory
- * Purpose:    Free the storage used by the list
- * In/out arg: head_pp, pointer to the head of the list pointer
- *               on input, NULL on return
+
+/* 
+ * Function		: freeMemory
+ * Purpose		: free the storage used by the list
+ * In/out args	: struct list_node_s** head_pp - pointer to the head of the list pointer
  */
 void freeMemory(struct list_node_s** head_pp) {
 	struct list_node_s* curr_p;
@@ -294,9 +301,16 @@ void freeMemory(struct list_node_s** head_pp) {
 
 	free(curr_p);
 	*head_pp = NULL;
-}
+} /* freeMemory */
 
-void* Thread_opp(void* rank) {
+
+
+/* 
+ * Function		: Thread_opp
+ * Purpose		: execute the oprations. this is the fuction which each of thread will access 
+ * In args		: void* rank
+ */
+void* Thread_opp(void* rank) { 
    long my_rank = (long) rank;
    long long i;
    long long my_n = m/thread_count;
@@ -327,4 +341,64 @@ void* Thread_opp(void* rank) {
    }  
 
    return NULL;
-} 
+} /* Thread_opp */
+
+
+
+/* 
+ * Function		: initializeRandomArray
+ * Purpose		: initialize the random array
+ * In/out args	: struct list_node_s** head_pp -,int n,int m,int* randomarray
+ */ 
+void initializeRandomArray(struct list_node_s** head_pp,int n,int m,int* randomarray){
+	int i = 0;
+	while (i < n) {
+		int x = rand() % MAX_RANDOM + 1;
+		if (Insert(x, &head) == 1){
+			randomarray[i] = x;
+			i++;
+		}
+	}
+
+	for(i = 0; i < m-n; i++){
+		randomarray[i+n] = rand() % MAX_RANDOM + 1;
+	}
+	 
+} /* initializeRandomArray */
+
+
+
+/* 
+ * Function		: initializeOperations
+ * Purpose		: initialize the operations array
+ * In/out args	: int* operations,int m_member,int m_insert,int m_delete
+ */ 
+void initializeOperations(int* operations,int m_member,int m_insert,int m_delete){
+	int count_member = 0;
+	int count_insert = 0;
+	int count_delete = 0;
+	int count_tot = 0;
+	
+	while (count_tot < (m_member+m_insert+m_delete)) {
+
+		int rand_select = rand() % 3;
+
+		if (rand_select == 0 && count_member < m_member) {
+			operations[count_tot] = 0;
+			count_member++;
+		}
+
+		else if (rand_select == 1 && count_insert < m_insert) {
+			operations[count_tot] = 1;
+			count_insert++;
+		}
+
+		else if (rand_select == 2 && count_delete < m_delete) {
+			operations[count_tot] = 2;
+			count_delete++;
+		}
+
+		count_tot = count_insert + count_member + count_delete;
+	} 
+} /* initializeOperations */
+
