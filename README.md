@@ -10,7 +10,7 @@ All these implementation of the linked list supports Member( ), Insert( ), and D
 	-timer.h -: Header file for calculating execution time.
 	-run.sh -: Shell script to run all combinations and get results.
 
-------------- Executing all combinations -----------------------
+###### ------------- Executing all combinations -----------------------
 
 1. Run the run.sh file using following command and get the command line output to text file.
 	`./run.sh > output.txt`
@@ -18,7 +18,7 @@ All these implementation of the linked list supports Member( ), Insert( ), and D
 2. If the "-bash: ./rn.sh: Permission denied" give execution permit to the script using following command.
 	chmod +x run.sh
 
-------------- Executing serial version -----------------------
+###### ------------- Executing serial version -----------------------
 
 1. Compile the serial_version.c using following command.
 	gcc serial_version.c -g -Wall -o serial_version -lpthread -lm
@@ -27,7 +27,7 @@ All these implementation of the linked list supports Member( ), Insert( ), and D
 	./serial_version <member_operations_fraction> <insert_operations_fraction> <delete_operations_fraction> <no_of_samples>
 	eg -: ./serial_version 0.99 0.005 0.005 200
 
-------------- Executing mutex version -----------------------
+###### ------------- Executing mutex version -----------------------
 
 1. Compile the mutex_version.c using following command.
 	gcc mutex_version.c -g -Wall -o mutex_version -lpthread -lm
