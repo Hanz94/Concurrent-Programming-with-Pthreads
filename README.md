@@ -51,3 +51,7 @@ All these implementation of the linked list supports Member( ), Insert( ), and D
 2. Run the mutex_version using following command with wanted parameters.  
 	./rwlock_version <m_f> <i_f> <d_f> <no_of_samples> <no_of_threads>  
 	eg -: `./rwlock_version 0.99 0.005 0.005 200 4`
+
+* m_f -: fraction of member operations
+* m_i -: fraction of insert operations
+* m_d -: fraction of delete operations
