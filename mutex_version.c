@@ -86,7 +86,6 @@ int main(int argc, char* argv[]) {
         while (count_tot < (m_member+m_insert+m_delete)) {
 
             int rand_select = rand() % 3;
-            int in_value = randomarray[count_tot];
 
             if (rand_select == 0 && count_member < m_member) {
                 operations[count_tot] = 0;
