@@ -13,7 +13,7 @@ All these implementation of the linked list supports Member( ), Insert( ), and D
 ------------- Executing all combinations -----------------------
 
 1. Run the run.sh file using following command and get the command line output to text file.
-	./run.sh > output.txt
+	`./run.sh > output.txt`
 
 2. If the "-bash: ./rn.sh: Permission denied" give execution permit to the script using following command.
 	chmod +x run.sh
